@@ -35,7 +35,7 @@ defmodule NervesHubCore.AccountsTest do
 
   test "create_user with org" do
     params = %{
-      name: "Testy McTesterson",
+      username: "Testy-McTesterson",
       org_name: "mctesterson.com",
       email: "testy@mctesterson.com",
       password: "test_password"
@@ -49,12 +49,12 @@ defmodule NervesHubCore.AccountsTest do
     [result_org | _] = user.orgs
 
     assert result_org.name == target_org.name
-    assert user.name == params.name
+    assert user.username == params.username
   end
 
   test "user cannot have two of the same org" do
     params = %{
-      name: "Testy McTesterson",
+      username: "Testy-McTesterson",
       org_name: "mctesterson.com",
       email: "testy@mctesterson.com",
       password: "test_password"
@@ -72,7 +72,7 @@ defmodule NervesHubCore.AccountsTest do
 
   test "create_user with no org" do
     params = %{
-      name: "Testy McTesterson",
+      username: "Testy-McTesterson",
       email: "testy@mctesterson.com",
       password: "test_password"
     }
@@ -96,7 +96,7 @@ defmodule NervesHubCore.AccountsTest do
 
     user_params = %{
       orgs: [org_1],
-      name: "Testy McTesterson",
+      username: "Testy-McTesterson",
       email: "testy@mctesterson.com",
       password: "test_password"
     }
@@ -106,7 +106,7 @@ defmodule NervesHubCore.AccountsTest do
     [result_org_1 | _] = user.orgs
 
     assert result_org_1.name == org_1.name
-    assert user.name == user_params.name
+    assert user.username == user_params.username
 
     {:ok, user} = Accounts.add_user_to_org(user, org_2)
     assert org_1 in user.orgs
@@ -122,7 +122,7 @@ defmodule NervesHubCore.AccountsTest do
     setup do
       user_params = %{
         orgs: [%{name: "test org 1"}],
-        name: "Testy McTesterson",
+        username: "Testy-McTesterson",
         email: "testy@mctesterson.com",
         password: "test_password"
       }
@@ -152,7 +152,7 @@ defmodule NervesHubCore.AccountsTest do
 
   test "create_org_with_user_with_certificate with valid params" do
     params = %{
-      name: "Testy McTesterson",
+      username: "Testy-McTesterson",
       org_name: "mctesterson.com",
       email: "testy@mctesterson.com",
       password: "test_password"
@@ -166,7 +166,7 @@ defmodule NervesHubCore.AccountsTest do
     [result_org | _] = user.orgs
 
     assert result_org.name == target_org.name
-    assert user.name == params.name
+    assert user.username == params.username
 
     params = %{
       description: "abcd",
@@ -178,7 +178,7 @@ defmodule NervesHubCore.AccountsTest do
 
   test "cannot create user certificate with duplicate serial" do
     params = %{
-      name: "Testy McTesterson",
+      username: "Testy-McTesterson",
       org_name: "mctesterson.com",
       email: "testy@mctesterson.com",
       password: "test_password"
