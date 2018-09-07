@@ -28,7 +28,9 @@ defmodule NervesHubAPIWeb.UserControllerTest do
   test "authenticate existing accounts" do
     password = "12345678"
     org = Fixtures.org_fixture()
-    user = Fixtures.user_fixture(org, %{email: "account_test@test.com", password: password})
+
+    user =
+      Fixtures.user_fixture(%{orgs: [org], email: "account_test@test.com", password: password})
 
     conn = build_conn()
     conn = post(conn, user_path(conn, :auth), %{email: user.email, password: password})
