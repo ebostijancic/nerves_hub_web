@@ -13,6 +13,7 @@ defmodule NervesHubWWW.Application do
     children = [
       # Start the endpoint when the application starts
       supervisor(NervesHubWWWWeb.Endpoint, [])
+      # worker(NervesHubWWWWeb.DeviceStatusWorker, [])
       # Start your own worker by calling: NervesHubWWW.Worker.start_link(arg1, arg2, arg3)
       # worker(NervesHubWWW.Worker, [arg1, arg2, arg3]),
     ]

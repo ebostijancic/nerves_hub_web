@@ -196,10 +196,12 @@ defmodule NervesHubCore.Fixtures do
     firmware = firmware_fixture(org_key, product)
     deployment = deployment_fixture(firmware)
     device = device_fixture(org, firmware, deployment)
+    device_certificate = device_certificate_fixture(device)
 
     %{
       org: org,
       device: device,
+      device_certificate: device_certificate,
       org_key: org_key,
       user: user,
       firmware: firmware,

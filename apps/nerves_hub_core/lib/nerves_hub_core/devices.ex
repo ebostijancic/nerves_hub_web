@@ -1,20 +1,33 @@
 defmodule NervesHubCore.Devices do
   import Ecto.Query
 
-  alias NervesHubCore.Devices.{Device, DeviceCertificate}
-  alias NervesHubCore.Deployments.Deployment
-  alias NervesHubCore.Firmwares.Firmware
-  alias NervesHubCore.Accounts.Org
-  alias NervesHubCore.Products.Product
-  alias NervesHubCore.Repo
   alias Ecto.Changeset
+
+  alias NervesHubCore.{
+    Deployments.Deployment,
+    Firmwares,
+    Firmwares.Firmware,
+    Accounts.Org,
+    Products.Product,
+    Repo
+  }
+
+  alias NervesHubCore.Devices.{Device, DeviceCertificate}
 
   @uploader Application.get_env(:nerves_hub_core, :firmware_upload)
 
-  def get_devices(%Org{id: org_id}) do
+  def get_devices(%Org{id: org_id}), do: get_devices({:org_id, org_id})
+
+  def get_devices({:org_id, org_id}) do
     query = from(d in Device, where: d.org_id == ^org_id)
 
     query
+    |> Device.with_firmware()
+    |> Repo.all()
+  end
+
+  def get_devices(device_ids) when is_list(device_ids) do
+    from(d in Device, where: d.id in ^device_ids)
     |> Device.with_firmware()
     |> Repo.all()
   end
@@ -153,6 +166,8 @@ defmodule NervesHubCore.Devices do
     |> Repo.all()
   end
 
+  @spec get_device_by_certificate(DeviceCertificate.t()) ::
+          {:ok, Device.t()} | {:error, :not_found}
   def get_device_by_certificate(%DeviceCertificate{} = cert) do
     query =
       from(
@@ -186,6 +201,18 @@ defmodule NervesHubCore.Devices do
 
       certificate ->
         {:ok, certificate}
+    end
+  end
+
+  @doc """
+  Attempts to resolve the firmware identified by `fw_uuid` and set that as the devices last known
+  firmware.
+  """
+  @spec update_last_known_firmware(Device.t(), String.t()) :: {} | {:error, :no_firmware_found}
+  def update_last_known_firmware(%Device{org: org} = device, fw_uuid) do
+    case Firmwares.get_firmware_by_uuid(org, fw_uuid) do
+      {:ok, firmware} -> update_device(device, %{last_known_firmware_id: firmware.id})
+      _ -> {:error, :no_firmware_found}
     end
   end
 

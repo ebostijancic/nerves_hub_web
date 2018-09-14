@@ -39,4 +39,11 @@ else
     email: root_user_email,
     password: "nerveshub"
   })
+
+  Accounts.create_user(%{
+    orgs: [root_org],
+    name: "other",
+    email: "a@b.com",
+    password: "nerveshub"
+  })
 end
